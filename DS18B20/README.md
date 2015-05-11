@@ -1,15 +1,15 @@
 # DS18B20温度传感器函数模块
 作者：何相龙 <br/>
 邮箱：qwgg9654@gmail.com <br/>
-&emsp;admin@hxlxz.com <br/>
+&emsp;&emsp;admin@hxlxz.com <br/>
 功能描述：DS18B20温度传感器的简单操作函数模块的头文件 <br/>
 备注：尽量使用封装好的函数进行操作，而不要使用直接对DS18B20读写的函数。 <br/>
 &emsp;使用该模块，请在程序中定义DS18B20_IO_SET常量为DS18B20的数据接口。 <br/>
-&emsp;如 #define DS18B20_IO_SET P0^0 <br/>
+&emsp;&emsp;如 #define DS18B20_IO_SET P0^0 <br/>
 &emsp;使用该模块，请在程序中定义STC_YX常量为STC单片机指令集名称。 <br/>
-&emsp;如 #define STC_YX "STC_Y5" <br/>
+&emsp;&emsp;如 #define STC_YX "STC_Y5" <br/>
 &emsp;使用该模块，请在程序中定义XTAL常量为晶振频率 <br/>
-&emsp;如 #define XTAL 11.059200 <br/>
+&emsp;&emsp;如 #define XTAL 11.059200 <br/>
 ## double DS18B20_GetTemp(unsigned char *addr);
 函数名：DS18B20_GetTemp <br/>
 函数功能：读取DS18B20，获得温度。 <br/>
