@@ -3,4 +3,4 @@
 本人受此启发，打算做一个51单片机的各类函数模块库，为初学51单片机的爱好者提供便利。<br/>
 本项目采用GPL v3许可证授权，任何使用本源代码的项目必须开源，且须注明使用了本项目的代码。<br/>
 ##传感器类
-<a href="https://github.com/qwgg9654/51freecode/tree/master/DS18B20" target="_blank" >DS18B20 数字单线式温度传感器</a> <br/>
+<a href="/DS18B20" target="_blank" >DS18B20 数字单线式温度传感器</a> <br/>
