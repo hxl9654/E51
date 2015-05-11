@@ -30,7 +30,7 @@
 	功能描述：18B20温度传感器的简单操作
 *////////////////////////////////////////////////////////////////////////////////////////
 /*//////////////////外部声明//////////////////////////////////
-extern int DS18B20_GetTemp(uint8 *addr);    //读取18B20，获得温度。（addr：64字节的器件编号，skip ROM：addr[0]=0x00）返回温度值。
+extern int DS18B20_GetTemp(uint8 *addr);    //
 extern void DS18B20_Start(uint8 *addr);     //启动18B20温度转换。（addr：64字节的器件编号，skip ROM：addr[0]=0x00）。每次读出温度后必须重新启动温度转换。
 extern bit DS18B20_Init();  //初始化18B20，也可用于检测器件是否存在。返回值1：正常；2：异常。
 ////////////////////////////////////////////////////////////*/
@@ -126,13 +126,27 @@ void DS18B20_Start(uint8 *addr)
 	}
 	DS18B20_Write(0x44);
 }
-int DS18B20_GetTemp(uint8 *addr)
+/*///////////////////////////////////////////////////////////////////////////////////
+*函数名：DS18B20_GetTemp
+*函数功能：读取18B20，获得温度。
+*参数列表：
+*   *addr
+*       参数类型：uint8型指针（连续8个uint8的数据）
+*       参数描述：64字节的器件编号。特别的，skip ROM时addr[0]请传入0x00
+*返回值：一个double型变量，获取到的温度值。
+*版本：1.0
+*作者：何相龙
+*日期：2015年5月11日
+*////////////////////////////////////////////////////////////////////////////////////
+double DS18B20_GetTemp(uint8 *addr)
 {
-	int temp ;
+	int temp;
+	double tempo;
 	uint8 temp1,temp2;
 	uint16 temp3;
+	bit flag = 0;
 	if(!DS18B20_Init())return ;
-	if(addr[0]==0x00)DS18B20_Write(0xCC);
+	if(addr[0] == 0x00)DS18B20_Write(0xCC);
 	else
 	{
 		DS18B20_Write(0x55);
@@ -149,18 +163,21 @@ int DS18B20_GetTemp(uint8 *addr)
 	temp1=DS18B20_Read();
 	temp2=DS18B20_Read();
 	temp3=(uint16)temp2;
-	temp3<<=8;
+	temp3 <<= 8;
 	temp3|=(uint16)temp1;
 	DelayX10us(15);
 	if(temp3&0x8000)
 	{
-		temp3&=0x07FF;
-		temp=-temp3;
+		temp3 &= 0x07FF;
+		temp = -temp3;
+		flag = 1;
 	}
 	else
 	{
-		temp3&=0x07FF;
-		temp=temp3;
+		temp3 &= 0x07FF;
+		temp = temp3;
 	}
-	return temp;
+	tempo = temp >> 4;
+	tempo += temp & 0x08 * 0.5 + temp & 0x04 * 0.25 + temp & 0x02 * 0.125 + temp & 0x01 * 0.6275;
+	return tempo;
 }
