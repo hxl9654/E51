@@ -13,7 +13,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-	文件名：18B20.h
+	文件名：DS18B20.h
 	作者：何相龙
 	邮箱：qwgg9654@gmail.com
 		  admin@hxlxz.com

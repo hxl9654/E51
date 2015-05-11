@@ -1,5 +1,4 @@
-# DS18B20温度传感器
-文件名：18B20.h <br/>
+# DS18B20温度传感器函数模块
 作者：何相龙 <br/>
 邮箱：qwgg9654@gmail.com <br/>
 	  admin@hxlxz.com <br/>
