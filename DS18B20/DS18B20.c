@@ -26,22 +26,22 @@
           使用该模块，请在程序中定义XTAL常量为晶振频率
           如 #define XTAL 11.059200
 *////////////////////////////////////////////////////////////////////////////////////////
-#define 6nop(); {_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();}
+#include<DS18B20.h>
+#define _6nop(); {_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();}
 //定义适用于STC_Y3,STC_Y5的nop延时
-#ifndef DS18B20_IO_SET
-#define DS18B20_IO_SET ;
-#endif //如果没有定义DS18B20的IO口，则让编译器产生错误
+#define STC_Y1 1
+#define STC_Y3 3
+#define STC_Y5 5
+
+sbit DS18B20_IO = DS18B20_IO_SET;
 
 #ifndef STC_YX
-#define STC_YX "STC_Y5"
+#define STC_YX STC_Y5
 #endif //如果没有定义STC单片机的指令集，则默认为STC_Y5指令集
 
 #ifndef XTAL
 #define XTAL 11.059200
 #endif //如果没有定义晶振频率，则默认为11.0592M晶振
-
-sbit DS18B20_IO = DS18B20_IO_SET;
-//定义DS18B20的数据IO口（请自行#define DS18B20_IO_SET P0^0 ）
 
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：DelayX10us
@@ -61,33 +61,38 @@ sbit DS18B20_IO = DS18B20_IO_SET;
 *////////////////////////////////////////////////////////////////////////////////////
 void DelayX10us(unsigned char t)
 {
-	unsigned char i;
-	#if STC_YX == "STC_Y1"          //如果当前指令集为STC_Y1，由于该款单片机性能较差，所以用宏来针对不同的晶振频率选择延时函数
+	unsigned int i;
+	#if STC_YX == STC_Y1
+		//如果当前指令集为STC_Y1，由于该款单片机性能较差，所以用宏来针对不同的晶振频率选择延时函数
         #if XTAL < 8
         #elif XTAL >= 8 && XTAL < 9
             _nop_();
         #elif XTAL >= 9 && XTAL < 12
-            i = 1;
+            i = t;
             while(--i);
         #elif XTAL >= 12 && XTAL < 14
-            i = 2;
+            i = 2 * t;
             while(--i);
         #elif XTAL >= 14 && XTAL < 16
-            i = 3;
+            i = 3 * t;
             while(--i);
         #elif XTAL >= 16 && XTAL < 18
-            i = 4;
+            i = 4 * t;
             while(--i);
         #elif XTAL >= 18 && XTAL < 20
-            i = 5;
+            i = 5 * t;
             while(--i);
-       #elif XTAL >= 20
-            i = XTAL / 10 + 0.5;
+        #elif XTAL >= 20
+            i = XTAL / 10 * t + 0.5;
             while(--i);
         #endif
     #else                           //如果当前指令集为STC_Y3或STC_Y5
-        i = 2.2 * XTAL + 0.5;
-        while (--i);
+		i = t * 2;
+        while (--i)
+		{
+			_6nop();_6nop();_6nop();_6nop();_6nop();
+			_6nop();_nop_();_nop_();_nop_();
+		}
 	#endif
 }
 /*///////////////////////////////////////////////////////////////////////////////////
@@ -134,10 +139,10 @@ void DS18B20_Write(unsigned char dat)
 		if(dat&mask)                    //获取当前位是否为1
 		{
 			DS18B20_IO=0;               //位开始信号
-			#if STC_YX == "STC_Y1"      //稍微延时，防止错误
-			_nop_();                    //对不同的单片机指令集做了不同的处理
+			#if STC_YX == STC_Y1
+			_nop_();                    //稍微延时，防止错误。对不同的单片机指令集做了不同的处理
 			#else
-            6nop();
+            _6nop();_6nop();
 			#endif
 			DS18B20_IO=1;               //拉高总线，发送数据
 			DelayX10us(8);              //延时80us
@@ -148,10 +153,10 @@ void DS18B20_Write(unsigned char dat)
 			DelayX10us(8);              //延时80us
 			DS18B20_IO=1;               //释放总线
 		}
-			#if STC_YX == "STC_Y1"      //稍微延时，防止错误
-			_nop_();_nop_();            //对不同的单片机指令集做了不同的处理
+			#if STC_YX == STC_Y1
+			_nop_();_nop_();            //稍微延时，防止错误。对不同的单片机指令集做了不同的处理
 			#else
-            6nop();6nop();
+            _6nop();_6nop();
 			#endif
 	}
 	EA=1;                               //恢复中断使能
@@ -172,10 +177,10 @@ unsigned char DS18B20_Read()
 	for(mask=0x01;mask!=0;mask<<=1)     //按位读取数据
 	{
 		DS18B20_IO=0;                   //拉低总线，发送起始信号
-        #if STC_YX == "STC_Y1"          //稍微延时，防止错误
-        _nop_();_nop_();                //对不同的单片机指令集做了不同的处理
+        #if STC_YX == STC_Y1
+        _nop_();_nop_();                //稍微延时，防止错误。对不同的单片机指令集做了不同的处理
         #else
-        6nop();6nop();
+        _6nop();_6nop();
         #endif
 
 		DS18B20_IO=1;                   //释放总线
@@ -215,6 +220,7 @@ bit DS18B20_Start(unsigned char *addr)
 		DS18B20_Write(addr[7]);
 	}
 	DS18B20_Write(0x44);                    //发送启动温度转换指令
+	return 1;
 }
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：DS18B20_GetTemp
@@ -272,6 +278,6 @@ double DS18B20_GetTemp(unsigned char *addr)
 		temp = temp3;
 	}
 	tempo = temp >> 4;                          //处理温度值，存储到double型变量tempo中
-	tempo += temp & 0x08 * 0.5 + temp & 0x04 * 0.25 + temp & 0x02 * 0.125 + temp & 0x01 * 0.6275;
+	tempo += (temp & 0x08) * 0.5 + (temp & 0x04) * 0.25 + (temp & 0x02) * 0.125 + (temp & 0x01) * 0.6275;
 	return tempo;
 }
