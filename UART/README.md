@@ -5,7 +5,7 @@
 <a href="/UART/Demo/" target="_blank">Demo程序</a>  <br/>
 功能描述：串口字符串通信模块 <br/>
 备注：使用该模块接收数据时，请在你的程序中定义编写UART_Action函数，详见下面的说明。  <br/>
-&emsp;&emsp;使用该模块，请在config.h中定义UART_BUFF_MAX常量为数据缓存数组最大值。  <br/>
+&emsp;&emsp;使用该模块，请在config.h中定义UART_BUFF_MAX常量为数据缓存数组最大长度。  <br/>
 &emsp;&emsp;&emsp;&emsp;如 #define UART_BUFF_MAX 64  <br/>
 &emsp;&emsp;使用该模块，请在config.h中定义XTAL常量为晶振频率（单位：兆赫兹）。  <br/>
 &emsp;&emsp;&emsp;&emsp;如 #define XTAL 11.059200  <br/>

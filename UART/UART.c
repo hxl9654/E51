@@ -91,6 +91,33 @@ void UART_SendString(unsigned char *dat, unsigned char len)
 	}
 }
 /*///////////////////////////////////////////////////////////////////////////////////
+*函数名：UART_Read
+*函数功能：将暂存数组中的数据读取出来。
+*参数列表：
+*   *to
+*       参数类型：unsigned char型指针
+*       参数描述：存储接收到的字符的位置
+*   len
+*       参数类型：unsigned char型数据
+*       参数描述：要读取的字符串的长度
+*返回值：unsigned char型数据，字符串的实际长度
+*版本：1.0
+*作者：何相龙
+*日期：2014年12月9日
+*////////////////////////////////////////////////////////////////////////////////////
+unsigned char UART_Read(unsigned char *to, unsigned char len)
+{
+	unsigned char i;
+	if(UART_BuffIndex < len)len = UART_BuffIndex;   //获取当前接收数据的位数
+	for(i = 0;i < len;i ++)                         //复制数据的目标数组
+		{
+			*to = UART_Buff[i];
+			to ++;
+		}
+	UART_BuffIndex = 0;                             //清空串口接收缓冲区当前位置
+	return len;
+}
+/*///////////////////////////////////////////////////////////////////////////////////
 *函数名：UART_Driver
 *函数功能：串口通信监控函数，在主循环中调用。
 *           如果接收到字符串，会自动调用另行编写的UART_Action(unsigned char *dat,unsigned char len)
@@ -141,33 +168,6 @@ void UART_RxMonitor(unsigned char ms)
 			UART_ResiveStringEndFlag = 1;           //设置串口字符串接收全部完成标志
 			UART_ResiveStringFlag = 0;              //清空串口字符串正在接收标志
 		}
-}
-/*///////////////////////////////////////////////////////////////////////////////////
-*函数名：UART_Read
-*函数功能：将暂存数组中的数据读取出来。
-*参数列表：
-*   *to
-*       参数类型：unsigned char型指针
-*       参数描述：存储接收到的字符的位置
-*   len
-*       参数类型：unsigned char型数据
-*       参数描述：要读取的字符串的长度
-*返回值：unsigned char型数据，字符串的实际长度
-*版本：1.0
-*作者：何相龙
-*日期：2014年12月9日
-*////////////////////////////////////////////////////////////////////////////////////
-unsigned char UART_Read(unsigned char *to, unsigned char len)
-{
-	unsigned char i;
-	if(UART_BuffIndex < len)len = UART_BuffIndex;   //获取当前接收数据的位数
-	for(i = 0;i < len;i ++)                         //复制数据的目标数组
-		{
-			*to = UART_Buff[i];
-			to ++;
-		}
-	UART_BuffIndex = 0;                             //清空串口接收缓冲区当前位置
-	return len;
 }
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：interrupt_UART
