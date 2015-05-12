@@ -5,9 +5,9 @@
 <a href="/IIC/Demo/" target="_blank">Demo程序</a>  <br/>
 功能描述：用单片机IO口模拟实现IIC通信 <br/>
 备注：使用该模块，请在程序中定义IIC_SDA常量为IIC总线的SDA数据接口。 <br/>
-&emsp;&emsp;如 #define IIC_SDA_SET P0^0 <br/>
-&emsp;使用该模块，请在程序中定义IIC_SCL常量为IIC总线的SCL数据接口。 <br/>
-&emsp;&emsp;如 #define IIC_SCL_SET P0^1 <br/>
+&emsp;&emsp;&emsp;&emsp;如 #define IIC_SDA_SET P0^0 <br/>
+&emsp;&emsp;&emsp;使用该模块，请在程序中定义IIC_SCL常量为IIC总线的SCL数据接口。 <br/>
+&emsp;&emsp;&emsp;&emsp;如 #define IIC_SCL_SET P0^1 <br/>
 ## void IIC_Start();
 函数名：IIC_Start <br/>
 函数功能：发送IIC总线起始信号 <br/>
