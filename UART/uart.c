@@ -13,28 +13,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-	°æÈ¨ËùÓĞ£¨C£© <2014>   <ºÎÏàÁú>
-	ÕâÒ»³ÌĞòÊÇ×ÔÓÉÈí¼ş£¬Äã¿ÉÒÔ×ñÕÕ×ÔÓÉÈí¼ş»ù½ğ»á³ö°æµÄGNUÍ¨ÓÃ¹«¹²Ğí¿ÉÖ¤
-	Ìõ¿îÀ´ĞŞ¸ÄºÍÖØĞÂ·¢²¼ÕâÒ»³ÌĞò¡£Äã¿ÉÒÔÊ¹ÓÃĞí¿ÉÖ¤µÄµÚÈı°æ£¬»òÕß£¨¸ù¾İÄã
-	µÄÑ¡Ôñ£©ÓÃÈÎºÎ¸üĞÂµÄ°æ±¾¡£
-
-	·¢²¼ÕâÒ»³ÌĞòµÄÄ¿µÄÊÇÏ£ÍûËüÓĞÓÃ£¬µ«Ã»ÓĞÈÎºÎµ£±£¡£ÉõÖÁÃ»ÓĞÊÊºÏÌØ¶¨Ä¿µÄ
-	µÄÒşº¬µÄµ£±£¡£¸üÏêÏ¸µÄÇé¿öÇë²ÎÔÄGNUÍ¨ÓÃ¹«¹²Ğí¿ÉÖ¤¡£
-
-	ÄãÓ¦¸ÃÒÑ¾­ºÍ³ÌĞòÒ»ÆğÊÕµ½Ò»·İGNUÍ¨ÓÃ¹«¹²Ğí¿ÉÖ¤µÄ¸±±¾¡£Èç¹û»¹Ã»ÓĞ£¬Çë·Ã
-	ÎÊ<http://www.gnu.org/licenses/>¡£
+	ÎÄ¼şÃû£ºUART.c
 	×÷Õß£ººÎÏàÁú
 	ÓÊÏä£ºqwgg9654@gmail.com
-		  568629794@qq.com
-	2014Äê12ÔÂ9ÈÕ
-	¹¦ÄÜÃèÊö£º´®¿Ú×Ö·û´®Í¨ĞÅ
+		  admin@hxlxz.com
+	¹¦ÄÜÃèÊö£º´®¿Ú×Ö·û´®Í¨ĞÅÄ£¿é
+	±¸×¢£º¾¡Á¿Ê¹ÓÃ·â×°ºÃµÄº¯Êı½øĞĞ²Ù×÷£¬¶ø²»ÒªÊ¹ÓÃÖ±½Ó¶Ô´®¿Ú½øĞĞ²Ù×÷¡£
 *////////////////////////////////////////////////////////////////////////////////////////
-/*//////////////////Íâ²¿ÉùÃ÷//////////////////////////////////
-extern void UART_RxMonitor(uint8 ms)//UART×Ö·û´®½ÓÊÕ½áÊøÅĞ¶Ï¡£ÔÚ¶¨Ê±Æ÷ÖĞµ÷ÓÃ£¨ms£º¶¨Ê±Æ÷Ê±ÖÓÖÜÆÚ£©
-extern void UART_Driver()//UARTÍ¨ĞÅ¼à¿Øº¯Êı£¬ÔÚÖ÷Ñ­»·ÖĞµ÷ÓÃ¡£Èç¹û½ÓÊÕµ½×Ö·û´®£¬»á×Ô¶¯µ÷ÓÃÁíĞĞ±àĞ´µÄUART_Action(uint8 *dat,uint8 len)
-extern void UART_SendString(uint8 *dat,uint8 len)  //´®¿ÚÍ¨ĞÅ£º·¢ËÍÒ»¸ö×Ö·û´®£¨dat£ºÒª·¢ËÍµÄ×Ö·û´®£¬len£º×Ö·û´®³¤¶È£©
-extern void UART_Conf(uint16 baud) //UARTÉèÖÃº¯Êı£¨buad£ºÓûÉèÖÃµÄ²¨ÌØÂÊ£©
-////////////////////////////////////////////////////////////*/
+
+	//2014Äê12ÔÂ9ÈÕ
+
 #include<reg51.h>
 #define BUFFMAX 64
 typedef unsigned char uint8;
@@ -64,18 +52,6 @@ void UART_SendString(uint8 *dat,uint8 len)  //´®¿ÚÍ¨ĞÅ£º·¢ËÍÒ»¸ö×Ö·û´®£¨dat£ºÒª·
 		UART_SendFlag=0;
 	}
 }
-uint8 UART_Read(uint8 *to,uint8 len)    //UART¶ÁÈ¡º¯Êı£¬´ÓSBUF¶ÁÈ¡µ½Êı¾İÔİ´æÊı×é
-{
-	uint8 i;
-	if(UART_BuffIndex<len)len=UART_BuffIndex;
-	for(i=0;i<len;i++)
-		{
-			*to=UART_Buff[i];
-			to++;
-		}
-	UART_BuffIndex=0;
-	return len;
-}
 void UART_Driver()//UARTÍ¨ĞÅ¼à¿Øº¯Êı£¬ÔÚÖ÷Ñ­»·ÖĞµ÷ÓÃ¡£Èç¹û½ÓÊÕµ½×Ö·û´®£¬»á×Ô¶¯µ÷ÓÃÁíĞĞ±àĞ´µÄUART_Action(uint8 *dat,uint8 len)
 {
 	uint8 pdata dat[64];
@@ -104,6 +80,18 @@ void UART_RxMonitor(uint8 ms)//UART×Ö·û´®½ÓÊÕ½áÊøÅĞ¶Ï¡£ÔÚ¶¨Ê±Æ÷ÖĞµ÷ÓÃ£¨ms£º¶¨Ê±Æ
 			UART_ResiveStringFlag=0;
 		}
 
+}
+uint8 UART_Read(uint8 *to,uint8 len)    //UART¶ÁÈ¡º¯Êı£¬´ÓSBUF¶ÁÈ¡µ½Êı¾İÔİ´æÊı×é
+{
+	uint8 i;
+	if(UART_BuffIndex<len)len=UART_BuffIndex;
+	for(i=0;i<len;i++)
+		{
+			*to=UART_Buff[i];
+			to++;
+		}
+	UART_BuffIndex=0;
+	return len;
 }
 void interrupt_UART() interrupt 4   //´®¿ÚÖĞ¶Ïº¯Êı
 {
