@@ -23,8 +23,8 @@
 #include<reg51.h>
 #include<UART.h>
 
-#ifndef BUFFMAX
-#define BUFFMAX 64
+#ifndef UART_BUFF_MAX
+#define UART_BUFF_MAX 64
 #endif // 如果没有定义BUFFMAX，则默认为64
 
 #ifndef XTAL
@@ -34,7 +34,7 @@
 extern void UART_Action(unsigned char *dat, unsigned char len);
 //此函数须另行编写：当串口完成一个字符串结束后会自动调用
 
-unsigned char pdata UART_Buff[BUFFMAX];     //串口接收缓冲区
+unsigned char pdata UART_Buff[UART_BUFF_MAX];     //串口接收缓冲区
 unsigned char UART_BuffIndex = 0;           //串口接收缓冲区当前位置
 
 bit UART_SendFlag;                          //串口发送完成标志
@@ -103,12 +103,12 @@ void UART_SendString(unsigned char *dat, unsigned char len)
 *////////////////////////////////////////////////////////////////////////////////////
 void UART_Driver()//
 {
-	unsigned char pdata dat[BUFFMAX];       //定义数据暂存数组
+	unsigned char pdata dat[UART_BUFF_MAX];       //定义数据暂存数组
 	unsigned char len;                      //数据的长度
 	if(UART_ResiveStringEndFlag)            //如果串口接收到一个完整的字符串
 		{
 			UART_ResiveStringEndFlag = 0;   //清空接收完成标志
-			len = UART_Read(dat, BUFFMAX);  //将数据从原数组读出，并得到数据的长度
+			len = UART_Read(dat, UART_BUFF_MAX);  //将数据从原数组读出，并得到数据的长度
 			UART_Action(dat, len);          //调用用户编写的UART_Action函数，将接收到的数据及数据长度作为参数
 		}
 }
