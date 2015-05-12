@@ -2,7 +2,7 @@
 作者：何相龙 <br/>
 邮箱：qwgg9654@gmail.com <br/>
 &emsp;&emsp;&emsp;admin@hxlxz.com <br/>
-<a href="/Demo/" target="_blank">Demo程序</a>
+<a href="/DS18B20/Demo/" target="_blank">Demo程序</a>  <br/>
 功能描述：DS18B20温度传感器的简单操作函数模块的头文件 <br/>
 备注：尽量使用封装好的函数进行操作，而不要使用直接对DS18B20读写的函数。 <br/>
 &emsp;使用该模块，请在config.h中定义DS18B20_IO_SET常量为DS18B20的数据接口。 <br/>
