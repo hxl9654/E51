@@ -13,23 +13,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-	版权所有（C） <2015>   <何相龙>
-	这一程序是自由软件，你可以遵照自由软件基金会出版的GNU通用公共许可证
-	条款来修改和重新发布这一程序。你可以使用许可证的第三版，或者（根据你
-	的选择）用任何更新的版本。
-
-	发布这一程序的目的是希望它有用，但没有任何担保。甚至没有适合特定目的
-	的隐含的担保。更详细的情况请参阅GNU通用公共许可证。
-
-	你应该已经和程序一起收到一份GNU通用公共许可证的副本。如果还没有，请访
-	问<http://www.gnu.org/licenses/>。
-
+    文件名：SPI_Analog.c
 	作者：何相龙
 	邮箱：qwgg9654@gmail.com
-		  568629794@qq.com
-	2015年1月8日
+		  admin@hxlxz.com
 	功能描述：SPI通信的IO口模拟实现
-*////////////////////////////////////////////////////////////////////////////////////////
+	备注：如使用的单片机自带SPI通信相关硬件功能（如STC15W系列），推荐直接使用其硬件模块。
+          使用该模块，请在config.h中定义SPI_CS_SET常量为SPI总线的CS使能接口。
+          如 #define SPI_CS_SET P0^0
+          使用该模块，请在config.h中定义SPI_SCLK_SET常量为SPI总线的SCLK时钟信号接口。
+          如 #define SPI_SCLK_SET P0^1
+          使用该模块，请在config.h中定义SPI_MOSI_SET常量为SPI总线的MOSI信号接口。
+          如 #define SPI_MOSI_SET P0^2
+          使用该模块，请在config.h中定义SPI_MISO_SET常量为SPI总线的MISO信号接口。
+          如 #define SPI_MISO_SET P0^3
+*////////////////////////////////////////////////////////////////////////////////////////\
+
 /*//////////////////外部声明//////////////////////////////////
 extern void SPI_Init();		//SPI初始化（仅主模式使用）
 extern void SPI_Write(uint8 dat);	//SPI主模式发送数据（dat：要发送的数据）
@@ -37,7 +36,7 @@ extern uint8 SPI_Read();	//SPI主模式读取数据，返回读取到的数据
 extern void SPI_Slave_Send(uint8 dat);	//SPI从模式回应数据（dat：要回应的数据）
 extern uint8 SPI_Slave_Resive();	//SPI从模式接收数据，返回接收到的数据
 ////////////////////////////////////////////////////////////*/
-
+//2015年1月8日
 #include<reg52.h>
 #include<intrins.h>
 typedef unsigned char uint8;
