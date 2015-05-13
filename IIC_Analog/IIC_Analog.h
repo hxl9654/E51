@@ -23,8 +23,8 @@
           使用该模块，请在config.h中定义IIC_SCL常量为IIC总线的SCL数据接口。
           如 #define IIC_SCL_SET P0^1
 *////////////////////////////////////////////////////////////////////////////////////////
-#ifndef _HEAD_IIC_
-#define _HEAD_IIC_
+#ifndef _HEAD_IIC_Analog_
+#define _HEAD_IIC_Analog_
 
 #include<intrins.h>
 #include<config.h>

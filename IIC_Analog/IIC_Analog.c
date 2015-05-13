@@ -24,7 +24,7 @@
           如 #define IIC_SCL_SET P0^1
 *////////////////////////////////////////////////////////////////////////////////////////
 #include<reg51.h>
-#include<IIC.h>
+#include<IIC_Analog.h>
 
 #define IICDelay() {nop_();nop_();nop_();nop_();}
 //IIC通信中的简单延时
