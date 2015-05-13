@@ -5,4 +5,6 @@
 ## 传感器类
 <a href="/DS18B20" target="_blank" >DS18B20 数字单线式温度传感器</a> <br/>
 ## 底层通信类
-<a href="/IIC" target="_blank" >用单片机IO口模拟实现IIC通信</a> <br/>
+<a href="/UART" target="_blank" >串口字符串通信模块</a> <br/>
+<a href="/IIC_Analog" target="_blank" >用单片机IO口模拟实现IIC通信</a> <br/>
+<a href="/SPI_Analog" target="_blank" >用单片机IO口模拟实现SPI通信</a> <br/>
