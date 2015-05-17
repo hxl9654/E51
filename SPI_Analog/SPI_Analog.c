@@ -33,15 +33,6 @@
           使用该模块，请在config.h中定义SPI_MISO_SET常量为SPI总线的MISO信号接口。
           如 #define SPI_MISO_SET P0^3
 *////////////////////////////////////////////////////////////////////////////////////////
-
-/*//////////////////外部声明//////////////////////////////////
-extern void SPI_Init();		//SPI初始化（仅主模式使用）
-extern void SPI_Write(uint8 dat);	//SPI主模式发送数据（dat：要发送的数据）
-extern uint8 SPI_Read();	//SPI主模式读取数据，返回读取到的数据
-extern void SPI_Slave_Send(uint8 dat);	//SPI从模式回应数据（dat：要回应的数据）
-extern uint8 SPI_Slave_Resive();	//SPI从模式接收数据，返回接收到的数据
-////////////////////////////////////////////////////////////*/
-//2015年1月8日
 #include<reg52.h>
 #include<SPI_Analog.h>
 
@@ -58,7 +49,7 @@ sbit MISO = SPI_MISO_SET;
 
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：SPI_Init
-*函数功能：SPI初始化
+*函数功能：SPI初始化（仅主模式使用）
 *参数列表：
 *   无
 *返回值：无
@@ -154,7 +145,7 @@ unsigned char SPI_Read()
 }
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：SPI_Slave_Send
-*函数功能：SPI从模式：回复一位unsigned char 型的数据
+*函数功能：SPI从模式：回应一位unsigned char 型的数据
 *参数列表：
 *   dat
 *       参数类型：unsigned char型数据
@@ -202,12 +193,12 @@ void SPI_Slave_Send(unsigned char dat)
 unsigned char SPI_Slave_Resive()
 {
 	unsigned char mask = 0x80,dat = 0;
-	while(CS);
+	while(CS);                              //等待SPI使能信号
 	if(CPHA)
 		{
 			for(;mask != 0;mask >>= 1)
 				{
-					while(SCLK == CPOL);
+					while(SCLK == CPOL);    //
 					while(SCLK != CPOL);
 					if(MOSI)dat |= mask;
 				}
