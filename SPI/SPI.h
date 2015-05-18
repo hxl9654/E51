@@ -24,7 +24,6 @@
 #define _HEAD_SPI_
 
 #include<intrins.h>
-#include<config.h>
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：SPI_Read
 *函数功能：SPI主机模式：读取一位unsigned char型数据

@@ -24,8 +24,11 @@
 #include<SPI.h>
 bit IS_Master = 0;  //SPI主从 标志
 sbit SS = P1^2;     //定义SPI使能引脚
-
+unsigned char DataToSend = 0xFF;	//从机：发送数据暂存区
+#define Disable_0xFF 1
+//配置是否屏蔽接收到的0xFF 注意：如果取消屏蔽，则须用户自行在DataResive函数中判断接收到的0xFF是否为有效的数据。
 void DataResive(unsigned char dat);
+//当接收到数据，会自动调用该函数（须用户自行编写）。注意：0xFF默认情况下不被当作合法的数据！！！！
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：SPI_Read
 *函数功能：SPI主机模式：读取一位unsigned char型数据
@@ -41,7 +44,7 @@ void SPI_Read()
 {
     if(IS_Master == 1)  //如果是SPI主机模式
     {
-        SS = 0;         //使能从机
+        SPI_Send(0xFF);	//这里不是发送信号，而是产生一个SPI读取的SCLK时序
     }
 }
 /*///////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +66,11 @@ void SPI_Send(unsigned char dat)
         SS = 0;         //使能从机
 		SPDAT = dat;    //发送数据
     }
-    else SPDAT = dat;   //如果是从机模式，则将要发送的数据放入暂存区，等待主机使能信号
+    else
+	{
+		SPDAT = dat;   //如果是从机模式，则将要发送的数据放入暂存区，等待主机使能信号
+		DataToSend = dat;
+	}
 }
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：Interrupt_SPI
@@ -77,16 +84,27 @@ void SPI_Send(unsigned char dat)
 *////////////////////////////////////////////////////////////////////////////////////
 void Interrupt_SPI() interrupt 9
 {
-	SPSTAT = 0xB0;          //清空SPI状态标志
-	if(IS_Master == 1)      //如果是主机模式
+	SPSTAT = 0xB0;          	//清空SPI状态标志
+	if(IS_Master == 1)      	//如果是主机模式
     {
-		SS = 1;             //禁能SPI从机
-		DataResive(SPDAT);  //读出接收到的数据，调用用户自定义的函数
+		SS = 1;             	//禁能SPI从机
+		#if Disable_0xFF
+		if(SPDAT != 0xFF)
+		#endif
+			DataResive(SPDAT);  //读出接收到的数据，调用用户自定义的函数
     }
     else
     {
-        DataResive(SPDAT);  //读出接收到的数据，调用用户自定义的函数
-        SPDAT = 0x00;
+		#if Disable_0xFF
+		if(SPDAT != 0xFF)
+		{
+			DataResive(SPDAT);  //读出接收到的数据，调用用户自定义的函数
+		}
+		else SPDAT = DataToSend;
+		#else
+		DataResive(SPDAT);  //读出接收到的数据，调用用户自定义的函数
+		#endif
+
     }
 }
 /*///////////////////////////////////////////////////////////////////////////////////
@@ -136,5 +154,5 @@ void SPI_Init(bit cpha, bit cpol, bit mode)
 void SPI_Close()
 {
     SPCTL = 0x00;
-    ESPI = 0;
+    IE2 &= 0xFD;
 }
