@@ -22,8 +22,8 @@
 *////////////////////////////////////////////////////////////////////////////////////////
 #include<STC15W4K.h>
 #include<SPI.h>
-bit IS_Master = 0;
-sbit SS = P1^2;
+bit IS_Master = 0;  //SPI主从 标志
+sbit SS = P1^2;     //定义SPI使能引脚
 
 void DataResive(unsigned char dat);
 /*///////////////////////////////////////////////////////////////////////////////////
@@ -40,12 +40,12 @@ void DataResive(unsigned char dat);
 *////////////////////////////////////////////////////////////////////////////////////
 void SPI_Send(unsigned char dat)
 {
-    if(IS_Master == 1)
+    if(IS_Master == 1)  //如果是SPI主机模式
     {
-        SS = 0;
-		SPDAT = dat;
+        SS = 0;         //使能从机
+		SPDAT = dat;    //发送数据
     }
-    else SPDAT = dat;
+    else SPDAT = dat;   //如果是从机模式，则将要发送的数据放入暂存区，等待主机使能信号
 }
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：Interrupt_SPI
@@ -59,15 +59,15 @@ void SPI_Send(unsigned char dat)
 *////////////////////////////////////////////////////////////////////////////////////
 void Interrupt_SPI() interrupt 9
 {
-	SPSTAT = 0xB0;
-	if(IS_Master == 1)
+	SPSTAT = 0xB0;          //清空SPI状态标志
+	if(IS_Master == 1)      //如果是主机模式
     {
-		SS = 1;
+		SS = 1;             //重新使能SPI从机
 		SS = 0;
-		DataResive(SPDAT);
+		DataResive(SPDAT);  //读出接收到的数据，调用用户自定义的函数
     }
     else
-		DataResive(SPDAT);
+		DataResive(SPDAT);  //读出接收到的数据，调用用户自定义的函数
 }
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：SPI_Init
@@ -89,17 +89,17 @@ void Interrupt_SPI() interrupt 9
 *////////////////////////////////////////////////////////////////////////////////////
 void SPI_Init(bit cpha, bit cpol, bit mode)
 {
-	if(mode == 1)
+	if(mode == 1)       //如果是主机模式
     {
-        SPCTL = 0xD0;
-        IS_Master = 1;
+        SPCTL = 0xD0;   //配置SPI参数为主机
+        IS_Master = 1;  //设置主机标志
     }
 	else
-		SPCTL = 0x40;
-	if(cpol == 1)
+		SPCTL = 0x40;   //配置SPI参数为从机
+	if(cpol == 1)       //设置CPOL参数
 		SPCTL |= 0x08;
-	if(cpha == 1)
+	if(cpha == 1)       //设置CPHA参数
 		SPCTL |= 0x04;
-	EA = 1;
-	IE2 |= 0x02;
+	EA = 1;             //使能总中断
+	IE2 |= 0x02;        //使能SPI中断
 }
