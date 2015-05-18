@@ -2,7 +2,7 @@
 作者：何相龙 <br/>
 邮箱：qwgg9654@gmail.com <br/>
 &emsp;&emsp;&emsp;admin@hxlxz.com <br/>
-<a href="/UART/Demo/" target="_blank">Demo程序</a>  <br/>
+<a href="/UART/Sample/" target="_blank">Sample程序</a>  <br/>
 功能描述：串口字符串通信模块 <br/>
 备注：使用该模块接收数据时，请在你的程序中定义编写UART_Action函数，详见下面的说明。  <br/>
 &emsp;&emsp;使用该模块，请在config.h中定义UART_BUFF_MAX常量为数据缓存数组最大长度。  <br/>
@@ -12,7 +12,7 @@
 ## extern void UART_Action(unsigned char *dat, unsigned char len);
 <b>此函数须另行编写，当串口完成一个字符串结束后会自动调用。</b>  <br/>
 其中，dat是接收到的字符串的首地址指针，len是接收到的字符串的长度。  <br/>
-关于如何编写并使用这个函数，请参考Demo程序。  <br/>
+关于如何编写并使用这个函数，请参考Sample程序。  <br/>
 ## void UART_Conf(uint16 baud);
 函数名：UART_Conf <br/>
 函数功能：配置串口 <br/>

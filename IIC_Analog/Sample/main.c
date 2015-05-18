@@ -17,7 +17,7 @@
 	作者：何相龙
 	邮箱：qwgg9654@gmail.com
 		  admin@hxlxz.com
-	功能描述：用单片机IO口模拟实现IIC通信-Demo程序
+	功能描述：用单片机IO口模拟实现IIC通信-Sample程序
 	备注：由于程序相对简单，故不提供详细注释
 *////////////////////////////////////////////////////////////////////////////////////////
 #include"reg52.h"
@@ -28,12 +28,12 @@ int main()
 	unsigned char i = 0;
 	while(1)
 	{
-		i ++;	
+		i ++;
 		IIC_Start();
 		IIC_Write(i);
 		IIC_Stop();
 		Delay500ms();
-	}	
+	}
 }
 void Delay500ms()		//@11.0592MHz
 {

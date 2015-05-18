@@ -2,7 +2,7 @@
 作者：何相龙 <br/>
 邮箱：qwgg9654@gmail.com <br/>
 &emsp;&emsp;&emsp;admin@hxlxz.com <br/>
-<a href="/IIC_Analog/Demo/" target="_blank">Demo程序</a>  <br/>
+<a href="/IIC_Analog/Sample/" target="_blank">Sample程序</a>  <br/>
 功能描述：用单片机IO口模拟实现IIC通信 <br/>
 备注：使用该模块，请在config.h中定义IIC_SDA常量为IIC总线的SDA数据接口。 <br/>
 &emsp;&emsp;&emsp;&emsp;如 #define IIC_SDA_SET P0^0 <br/>
