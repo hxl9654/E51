@@ -39,14 +39,14 @@
 unsigned char PCF8591_Read(unsigned char chanl)
 {
 	unsigned char dat;
-	IIC_Start_PCF8591();
-	IIC_Write_PCF8591(0x90);
-	IIC_Write_PCF8591(chanl << 4);
-	IIC_Start_PCF8591();
-	IIC_Write_PCF8591(0x91);
-	IIC_Read_PCF8591(0);
-	dat = IIC_Read_PCF8591(1);
-	IIC_Stop_PCF8591();
+	IIC_Start_PCF8591();            //向PCF8591的IIC总线发送通信起始信号
+	IIC_Write_PCF8591(0x90);        //向PCF8591的IIC总线发送一位数据：地址控制字（可能需要根据实际情况更改），并选择写操作
+	IIC_Write_PCF8591(chanl << 4);  //向PCF8591的IIC总线发送一位数据：要读取的频道
+	IIC_Start_PCF8591();            //向PCF8591的IIC总线发送通信起始信号
+	IIC_Write_PCF8591(0x91);        //向PCF8591的IIC总线发送一位数据：地址控制字（可能需要根据实际情况更改），并选择读操作
+	IIC_Read_PCF8591(0);            //从PCF8591的IIC总线读取一位数据，并发送ACK
+	dat = IIC_Read_PCF8591(1);      //从PCF8591的IIC总线读取一位数据，并发送NAK
+	IIC_Stop_PCF8591();             //向PCF8591的IIC总线发送通信结束信号
 	return dat;
 }
 /*///////////////////////////////////////////////////////////////////////////////////
@@ -63,9 +63,9 @@ unsigned char PCF8591_Read(unsigned char chanl)
 *////////////////////////////////////////////////////////////////////////////////////
 void PCF8591_DA(unsigned char dat)
 {
-	IIC_Start_PCF8591();
-	IIC_Write_PCF8591(0x90);
-	IIC_Write_PCF8591(0x40);
-	IIC_Write_PCF8591(dat);
-	IIC_Stop_PCF8591();
+	IIC_Start_PCF8591();        //向PCF8591的IIC总线发送通信起始信号
+	IIC_Write_PCF8591(0x90);    //向PCF8591的IIC总线发送一位数据：地址控制字（可能需要根据实际情况更改），并选择写操作
+	IIC_Write_PCF8591(0x40);    //向PCF8591的IIC总线发送一位数据：启动DA转换命令
+	IIC_Write_PCF8591(dat);     //向PCF8591的IIC总线发送一位数据：要转换的参数值
+	IIC_Stop_PCF8591();         //向PCF8591的IIC总线发送通信结束信号
 }
