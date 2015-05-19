@@ -12,60 +12,48 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+	文件名：IIC_Analog.h
 	作者：何相龙
 	邮箱：qwgg9654@gmail.com
-		  568629794@qq.com
-	2014年12月11日
-	功能描述：PCF8591 AD/DA芯片简单控制
-	备注：使用该模块，请在config.h中定义IIC_SDA_SET_PCF8591常量为PCF8591的IIC总线的SDA数据接口。
-          如 #define IIC_SDA_SET_PCF8591 P0^0
-          使用该模块，请在config.h中定义IIC_SDA_SET_PCF8591常量为PCF8591的IIC总线的SCL数据接口。
-          如 #define IIC_SDA_SET_PCF8591 P0^1
+		  admin@hxlxz.com
+	功能描述：用单片机IO口模拟实现IIC通信（PCF8591模块专用）-头文件
 *////////////////////////////////////////////////////////////////////////////////////////
-#include<reg51.h>
-#include<IIC_PCF8591.h>
+#ifndef _HEAD_IIC_PCF8591_
+#define _HEAD_IIC_PCF8591_
+
+#include<intrins.h>
+#include<config.h>
+
 /*///////////////////////////////////////////////////////////////////////////////////
-*函数名：PCF8591_Read
-*函数功能：读取AD转换得到的值（普通转换，非差分）
-*参数列表：
-*   chanl
-*       参数类型：unsigned char型数据
-*       参数描述：通道号
-*返回值：一个unxigned char型数据，AD值
-*版本：1.0
-*作者：何相龙
-*日期：2014年12月11日
+*函数名：IIC_Start
+*函数功能：发送IIC总线起始信号
 *////////////////////////////////////////////////////////////////////////////////////
-unsigned char PCF8591_Read(unsigned char chanl)
-{
-	unsigned char dat;
-	IIC_Start_PCF8591();
-	IIC_Write_PCF8591(0x90);
-	IIC_Write_PCF8591(chanl << 4);
-	IIC_Start_PCF8591();
-	IIC_Write_PCF8591(0x91);
-	IIC_Read_PCF8591(0);
-	dat = IIC_Read_PCF8591(1);
-	IIC_Stop_PCF8591();
-	return dat;
-}
+void IIC_Start_PCF8591();
 /*///////////////////////////////////////////////////////////////////////////////////
-*函数名：PCF8591_DA
-*函数功能：启动PCF8591的DA输出
+*函数名：IIC_Stop
+*函数功能：发送IIC总线停止信号
+*////////////////////////////////////////////////////////////////////////////////////
+void IIC_Stop_PCF8591();
+/*///////////////////////////////////////////////////////////////////////////////////
+*函数名：IIC_Write
+*函数功能：向IIC总线发送一个unsigned char型数据
 *参数列表：
 *   dat
 *       参数类型：unsigned char型数据
-*       参数描述：要输出的DA值
-*返回值：无
-*版本：1.0
-*作者：何相龙
-*日期：2014年12月11日
+*       参数描述：要发送的数据
+*返回值：一个bit型数，是否正常完成操作（1：正常，0：异常）
 *////////////////////////////////////////////////////////////////////////////////////
-void PCF8591_DA(unsigned char dat)
-{
-	IIC_Start_PCF8591();
-	IIC_Write_PCF8591(0x90);
-	IIC_Write_PCF8591(0x40);
-	IIC_Write_PCF8591(dat);
-	IIC_Stop_PCF8591();
-}
+bit IIC_Write_PCF8591(unsigned char dat);
+/*///////////////////////////////////////////////////////////////////////////////////
+*函数名：IIC_Read
+*函数功能：从IIC总线读取一个unsigned char型数据
+*参数列表：
+*   ACK
+*       参数类型：bit型数据
+*       参数描述：数据读取结束后发送的应答位或非应答位
+*返回值：一个unsigned char型变量，读取到的数据
+*////////////////////////////////////////////////////////////////////////////////////
+unsigned char IIC_Read_PCF8591(bit ACK);
+
+#endif // _HEAD_IIC_

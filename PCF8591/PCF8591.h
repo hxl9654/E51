@@ -17,13 +17,12 @@
 		  568629794@qq.com
 	2014年12月11日
 	功能描述：PCF8591 AD/DA芯片简单控制
-	备注：使用该模块，请在config.h中定义IIC_SDA_SET_PCF8591常量为PCF8591的IIC总线的SDA数据接口。
-          如 #define IIC_SDA_SET_PCF8591 P0^0
-          使用该模块，请在config.h中定义IIC_SDA_SET_PCF8591常量为PCF8591的IIC总线的SCL数据接口。
-          如 #define IIC_SDA_SET_PCF8591 P0^1
 *////////////////////////////////////////////////////////////////////////////////////////
-#include<reg51.h>
-#include<IIC_PCF8591.h>
+#ifndef _HEAD_PCF8591_
+#define _HEAD_PCF8591_
+
+#include<intrins.h>
+#include<config.h>
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：PCF8591_Read
 *函数功能：读取AD转换得到的值（普通转换，非差分）
@@ -32,23 +31,8 @@
 *       参数类型：unsigned char型数据
 *       参数描述：通道号
 *返回值：一个unxigned char型数据，AD值
-*版本：1.0
-*作者：何相龙
-*日期：2014年12月11日
 *////////////////////////////////////////////////////////////////////////////////////
-unsigned char PCF8591_Read(unsigned char chanl)
-{
-	unsigned char dat;
-	IIC_Start_PCF8591();
-	IIC_Write_PCF8591(0x90);
-	IIC_Write_PCF8591(chanl << 4);
-	IIC_Start_PCF8591();
-	IIC_Write_PCF8591(0x91);
-	IIC_Read_PCF8591(0);
-	dat = IIC_Read_PCF8591(1);
-	IIC_Stop_PCF8591();
-	return dat;
-}
+unsigned char PCF8591_Read(unsigned char chanl);
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：PCF8591_DA
 *函数功能：启动PCF8591的DA输出
@@ -56,16 +40,7 @@ unsigned char PCF8591_Read(unsigned char chanl)
 *   dat
 *       参数类型：unsigned char型数据
 *       参数描述：要输出的DA值
-*返回值：无
-*版本：1.0
-*作者：何相龙
-*日期：2014年12月11日
 *////////////////////////////////////////////////////////////////////////////////////
-void PCF8591_DA(unsigned char dat)
-{
-	IIC_Start_PCF8591();
-	IIC_Write_PCF8591(0x90);
-	IIC_Write_PCF8591(0x40);
-	IIC_Write_PCF8591(dat);
-	IIC_Stop_PCF8591();
-}
+void PCF8591_DA(unsigned char dat);
+
+#endif
