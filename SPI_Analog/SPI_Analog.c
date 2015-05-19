@@ -78,29 +78,26 @@ void SPI_Write(unsigned char dat)
 {
 	unsigned char mask;
 	CS = 0;
-	if(CPHA)
-		{
-			for(mask = 0x80; mask != 0; mask >>= 1)
-				{
-					SCLK = ~ SCLK;
-					MOSI = dat & mask;
-					Dealy();
-					SCLK = ~ SCLK;
-					Dealy();
-				}
-		}
-	else
-		{
-			for(mask = 0x80; mask != 0;)
-				{
-					MOSI = dat&mask;
-					SCLK = ~ SCLK;
-					Dealy();
-					mask >>= 1;
-					SCLK = ~ SCLK;
-					Dealy();
-				}
-		}
+	#if CPHA
+		for(mask = 0x80; mask != 0; mask >>= 1)
+			{
+				SCLK = ~ SCLK;
+				MOSI = dat & mask;
+				Dealy();
+				SCLK = ~ SCLK;
+				Dealy();
+			}
+	#else
+		for(mask = 0x80; mask != 0;)
+			{
+				MOSI = dat&mask;
+				SCLK = ~ SCLK;
+				Dealy();
+				mask >>= 1;
+				SCLK = ~ SCLK;
+				Dealy();
+			}
+	#endif
 	CS = 1;
 }
 /*///////////////////////////////////////////////////////////////////////////////////
@@ -117,29 +114,26 @@ unsigned char SPI_Read()
 {
 	unsigned char dat = 0,mask = 0x80;
 	CS = 0;
-		if(CPHA)
-		{
-			for(;mask != 0;mask >>= 1)
-				{
-					SCLK = ~ SCLK;
-					Dealy();
-					if(MISO)dat |= mask;
-					SCLK = ~ SCLK;
-					Dealy();
-				}
-		}
-	else
-		{
-	        for(;mask != 0;mask >>= 1)
-		        {
-					Dealy();
-					if(MISO)dat |= mask;
-					SCLK = ~ SCLK;
-					Dealy();
-		            SCLK = ~ SCLK;
-					Dealy();
-		        }
-	    }
+	#if CPHA
+		for(;mask != 0;mask >>= 1)
+			{
+				SCLK = ~ SCLK;
+				Dealy();
+				if(MISO)dat |= mask;
+				SCLK = ~ SCLK;
+				Dealy();
+			}
+	#else
+		for(;mask != 0;mask >>= 1)
+			{
+				Dealy();
+				if(MISO)dat |= mask;
+				SCLK = ~ SCLK;
+				Dealy();
+				SCLK = ~ SCLK;
+				Dealy();
+			}
+	#endif
 	CS = 1;
 	return dat;
 }
@@ -158,27 +152,23 @@ unsigned char SPI_Read()
 void SPI_Slave_Send(unsigned char dat)
 {
 	unsigned char mask=0x80;
-	if(CPHA)
-		{
-			while(CS);
-			for(;mask != 0;mask >>= 1)
-				{
-					while(SCLK == CPOL);
-					MISO = dat&mask;
-					while(SCLK != CPOL);
-				}
-		}
-	else
-		{
-			for(;mask != 0;mask >>= 1)
-				{
-					MISO = dat & mask;
-					while(CS);
-					while(SCLK == CPOL);
-					while(SCLK != CPOL);
-				}
-		}
-
+	#if CPHA
+		while(CS);
+		for(;mask != 0;mask >>= 1)
+			{
+				while(SCLK == CPOL);
+				MISO = dat&mask;
+				while(SCLK != CPOL);
+			}
+	#else
+		for(;mask != 0;mask >>= 1)
+			{
+				MISO = dat & mask;
+				while(CS);
+				while(SCLK == CPOL);
+				while(SCLK != CPOL);
+			}
+	#endif
 }
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：SPI_Slave_Resive
@@ -194,23 +184,20 @@ unsigned char SPI_Slave_Resive()
 {
 	unsigned char mask = 0x80,dat = 0;
 	while(CS);                              //等待SPI使能信号
-	if(CPHA)
-		{
-			for(;mask != 0;mask >>= 1)
-				{
-					while(SCLK == CPOL);    //
-					while(SCLK != CPOL);
-					if(MOSI)dat |= mask;
-				}
-		}
-	else
-		{
-			for(;mask != 0;mask >>= 1)
-				{
-					while(SCLK == CPOL);
-					if(MOSI)dat |= mask;
-					while(SCLK != CPOL);
-				}
-		}
+	#if CPHA
+		for(;mask != 0;mask >>= 1)
+			{
+				while(SCLK == CPOL);    //
+				while(SCLK != CPOL);
+				if(MOSI)dat |= mask;
+			}
+	#else
+		for(;mask != 0;mask >>= 1)
+			{
+				while(SCLK == CPOL);
+				if(MOSI)dat |= mask;
+				while(SCLK != CPOL);
+			}
+	#endif
    return dat;
 }
