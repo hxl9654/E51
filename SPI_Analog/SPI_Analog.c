@@ -48,7 +48,7 @@ sbit MOSI = SPI_MOSI_SET;
 sbit MISO = SPI_MISO_SET;
 
 /*///////////////////////////////////////////////////////////////////////////////////
-*函数名：SPI_Init
+*函数名：SPI_Master_Init
 *函数功能：SPI初始化（仅主模式使用）
 *参数列表：
 *   无
@@ -57,7 +57,7 @@ sbit MISO = SPI_MISO_SET;
 *作者：何相龙
 *日期：2015年1月8日
 *////////////////////////////////////////////////////////////////////////////////////
-void SPI_Init()
+void SPI_Master_Init()
 {
 	SCLK = CPOL;
 	CS = 1;
@@ -152,22 +152,22 @@ unsigned char SPI_Read()
 void SPI_Slave_Send(unsigned char dat)
 {
 	unsigned char mask=0x80;
-	#if CPHA
-		while(CS);
-		for(;mask != 0;mask >>= 1)
-			{
+	while(CS);
+	#if CPHA		
+		for( ; mask != 0; mask >>= 1)
+			{				
 				while(SCLK == CPOL);
-				MISO = dat&mask;
+				MISO = dat & mask;				
 				while(SCLK != CPOL);
 			}
-	#else
-		for(;mask != 0;mask >>= 1)
+	#else		
+		for( ; mask != 0; mask >>= 1)
 			{
 				MISO = dat & mask;
-				while(CS);
-				while(SCLK == CPOL);
+				while(SCLK == CPOL);			
 				while(SCLK != CPOL);
 			}
+		
 	#endif
 }
 /*///////////////////////////////////////////////////////////////////////////////////
@@ -187,13 +187,13 @@ unsigned char SPI_Slave_Resive()
 	#if CPHA
 		for(;mask != 0;mask >>= 1)
 			{
-				while(SCLK == CPOL);    //
+				while(SCLK == CPOL);    				
 				while(SCLK != CPOL);
-				if(MOSI)dat |= mask;
+				if(MOSI)dat |= mask;				
 			}
 	#else
 		for(;mask != 0;mask >>= 1)
-			{
+			{								
 				while(SCLK == CPOL);
 				if(MOSI)dat |= mask;
 				while(SCLK != CPOL);
