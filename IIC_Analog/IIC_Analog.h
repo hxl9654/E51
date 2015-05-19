@@ -18,9 +18,9 @@
 	邮箱：qwgg9654@gmail.com
 		  admin@hxlxz.com
 	功能描述：用单片机IO口模拟实现IIC通信-头文件
-	备注：使用该模块，请在config.h中定义IIC_SDA常量为IIC总线的SDA数据接口。
+	备注：使用该模块，请在config.h中定义IIC_SDA_SET常量为IIC总线的SDA数据接口。
           如 #define IIC_SDA_SET P0^0
-          使用该模块，请在config.h中定义IIC_SCL常量为IIC总线的SCL数据接口。
+          使用该模块，请在config.h中定义IIC_SCL_SET常量为IIC总线的SCL数据接口。
           如 #define IIC_SCL_SET P0^1
 *////////////////////////////////////////////////////////////////////////////////////////
 #ifndef _HEAD_IIC_Analog_
