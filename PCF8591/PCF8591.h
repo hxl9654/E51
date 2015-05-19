@@ -17,6 +17,10 @@
 		  568629794@qq.com
 	2014年12月11日
 	功能描述：PCF8591 AD/DA芯片简单控制
+	备注：使用该模块，请在config.h中定义IIC_SDA_SET_PCF8591常量为PCF8591的IIC总线的SDA数据接口。
+          如 #define IIC_SDA_SET_PCF8591 P0^0
+          使用该模块，请在config.h中定义IIC_SDA_SET_PCF8591常量为PCF8591的IIC总线的SCL数据接口。
+          如 #define IIC_SDA_SET_PCF8591 P0^1
 *////////////////////////////////////////////////////////////////////////////////////////
 #ifndef _HEAD_PCF8591_
 #define _HEAD_PCF8591_
