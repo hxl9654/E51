@@ -134,7 +134,7 @@ unsigned char UART_Read(unsigned char *to, unsigned char len)
 *作者：何相龙
 *日期：2014年12月9日
 *////////////////////////////////////////////////////////////////////////////////////
-void UART_Driver()//
+void UART_Driver()
 {
 	unsigned char pdata dat[UART_BUFF_MAX];       //定义数据暂存数组
 	unsigned char len;                      //数据的长度
