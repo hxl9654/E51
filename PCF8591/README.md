@@ -7,8 +7,9 @@
 备注：使用该模块，请在config.h中定义IIC_SDA_SET_PCF8591常量为PCF8591的IIC总线的SDA数据接口。 <br/>
 &emsp;&emsp;&emsp;&emsp;如 #define IIC_SDA_SET_PCF8591 P0^0 <br/>
 &emsp;&emsp;&emsp;&emsp;使用该模块，请在config.h中定义IIC_SDA_SET_PCF8591常量为PCF8591的IIC总线的SCL数据接口。 <br/>
-&emsp;&emsp;&emsp;&emsp;如 #define IIC_SDA_SET_PCF8591 P0^1 <br/>
+&emsp;&emsp;&emsp;&emsp;如 #define IIC_SCL_SET_PCF8591 P0^1 <br/>
 本模块没有提供差分AD模块，如果有需要，欢迎提交issus。 <br/>
+
 ## unsigned char PCF8591_Read(unsigned char chanl);
 函数名：PCF8591_Read <br/>
 函数功能：读取AD转换得到的值（普通转换，非差分） <br/>
