@@ -34,7 +34,7 @@
 #ifndef XTAL
 #define XTAL 11.059200
 #endif //如果没有定义晶振频率，则默认为11.0592M晶振
-
+sbit AUXR = 0x8E;
 extern void UART_Action(unsigned char *dat, unsigned char len);
 //此函数须另行编写：当串口完成一个字符串结束后会自动调用
 
