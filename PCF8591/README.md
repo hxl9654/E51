@@ -1,8 +1,8 @@
-# SPI通信模块(STC15专用）
+# PCF8591 AD/DA 芯片模块
 作者：何相龙 <br/>
 邮箱：qwgg9654@gmail.com <br/>
 &emsp;&emsp;&emsp;admin@hxlxz.com <br/>
-本模块相对简单，不提供Sample程序。可以参考<a href="https://github.com/qwgg9654/C51_Study/tree/master/17%20PCF8592%20AD%E4%B8%8EDA" target="_blank">这个</a>。  <br/>
+<a href="/PCF8591/Sample/" target="_blank">Sample程序</a>  <br/>
 功能描述：PCF8591 AD/DA芯片简单控制 <br/>
 备注：使用该模块，请在config.h中定义IIC_SDA_SET_PCF8591常量为PCF8591的IIC总线的SDA数据接口。 <br/>
 &emsp;&emsp;&emsp;&emsp;如 #define IIC_SDA_SET_PCF8591 P0^0 <br/>
