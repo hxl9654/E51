@@ -4,6 +4,8 @@
 本项目采用GPL v3许可证授权，任何使用本源代码的项目必须开源，且须注明使用了本项目的代码。<br/>
 ## 传感器类
 <a href="/DS18B20" target="_blank" >DS18B20 数字单线式温度传感器</a> <br/>
+## 其他器件类
+<a href="/PCF8591" target="_blank" >PCF8591 AD DA芯片</a> <br/>
 ## 底层通信类
 <a href="/UART" target="_blank" >串口字符串通信模块</a> <br/>
 <a href="/IIC_Analog" target="_blank" >用单片机IO口模拟实现IIC通信</a> <br/>
