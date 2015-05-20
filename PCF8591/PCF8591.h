@@ -20,7 +20,7 @@
 	备注：使用该模块，请在config.h中定义IIC_SDA_SET_PCF8591常量为PCF8591的IIC总线的SDA数据接口。
           如 #define IIC_SDA_SET_PCF8591 P0^0
           使用该模块，请在config.h中定义IIC_SDA_SET_PCF8591常量为PCF8591的IIC总线的SCL数据接口。
-          如 #define IIC_SDA_SET_PCF8591 P0^1
+          如 #define IIC_SCL_SET_PCF8591 P0^1
 *////////////////////////////////////////////////////////////////////////////////////////
 #ifndef _HEAD_PCF8591_
 #define _HEAD_PCF8591_
@@ -31,12 +31,12 @@
 *函数名：PCF8591_Read
 *函数功能：读取AD转换得到的值（普通转换，非差分）
 *参数列表：
-*   chanl
+*   channel
 *       参数类型：unsigned char型数据
 *       参数描述：通道号
 *返回值：一个unxigned char型数据，AD值
 *////////////////////////////////////////////////////////////////////////////////////
-unsigned char PCF8591_Read(unsigned char chanl);
+unsigned char PCF8591_Read(unsigned char channel);
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：PCF8591_DA
 *函数功能：启动PCF8591的DA输出

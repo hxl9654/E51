@@ -20,15 +20,44 @@
 	备注：使用该模块，请在config.h中定义IIC_SDA_SET_PCF8591常量为PCF8591的IIC总线的SDA数据接口。
           如 #define IIC_SDA_SET_PCF8591 P0^0
           使用该模块，请在config.h中定义IIC_SDA_SET_PCF8591常量为PCF8591的IIC总线的SCL数据接口。
-          如 #define IIC_SDA_SET_PCF8591 P0^1
+          如 #define IIC_SDA_SCL_PCF8591 P0^1
 *////////////////////////////////////////////////////////////////////////////////////////
 #include<reg51.h>
 #include<IIC_PCF8591.h>
+bit PCF8591_DA_Flag = 0;	//DA功能是否打开标志位
+/*///////////////////////////////////////////////////////////////////////////////////
+*函数名：Delay10ms
+*函数功能：延时10毫秒
+*参数列表：
+*   无
+*返回值：无
+*版本：1.0
+*作者：何相龙
+*日期：2015年5月21日
+*////////////////////////////////////////////////////////////////////////////////////
+void Delay10ms()		//@33.1776MHz
+{
+	unsigned char i, j, k;
+
+	_nop_();
+	_nop_();
+	i = 2;
+	j = 67;
+	k = 183;
+	do
+	{
+		do
+		{
+			while (--k);
+		} while (--j);
+	} while (--i);
+}
+
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：PCF8591_Read
 *函数功能：读取AD转换得到的值（普通转换，非差分）
 *参数列表：
-*   chanl
+*   channel
 *       参数类型：unsigned char型数据
 *       参数描述：通道号
 *返回值：一个unxigned char型数据，AD值
@@ -36,17 +65,23 @@
 *作者：何相龙
 *日期：2014年12月11日
 *////////////////////////////////////////////////////////////////////////////////////
-unsigned char PCF8591_Read(unsigned char chanl)
+unsigned char PCF8591_Read(unsigned char channel)
 {
 	unsigned char dat;
-	IIC_Start_PCF8591();            //向PCF8591的IIC总线发送通信起始信号
-	IIC_Write_PCF8591(0x90);        //向PCF8591的IIC总线发送一位数据：地址控制字（可能需要根据实际情况更改），并选择写操作
-	IIC_Write_PCF8591(chanl << 4);  //向PCF8591的IIC总线发送一位数据：要读取的频道
-	IIC_Start_PCF8591();            //向PCF8591的IIC总线发送通信起始信号
-	IIC_Write_PCF8591(0x91);        //向PCF8591的IIC总线发送一位数据：地址控制字（可能需要根据实际情况更改），并选择读操作
-	IIC_Read_PCF8591(0);            //从PCF8591的IIC总线读取一位数据，并发送ACK
-	dat = IIC_Read_PCF8591(1);      //从PCF8591的IIC总线读取一位数据，并发送NAK
-	IIC_Stop_PCF8591();             //向PCF8591的IIC总线发送通信结束信号
+	IIC_Start_PCF8591();            	//向PCF8591的IIC总线发送通信起始信号
+	IIC_Write_PCF8591(0x90);        	//向PCF8591的IIC总线发送一位数据：地址控制字（可能需要根据实际情况更改），并选择写操作
+	if(PCF8591_DA_Flag)					//向PCF8591的IIC总线发送一位数据：要读取的频道（加入DA功能是否打开的判断，防止误操作）
+		IIC_Write_PCF8591(channel + 0x40);	
+	else IIC_Write_PCF8591(channel);		
+	IIC_Stop_PCF8591();             	//向PCF8591的IIC总线发送通信结束信号
+	
+	Delay10ms();
+	
+	IIC_Start_PCF8591();            	//向PCF8591的IIC总线发送通信起始信号
+	IIC_Write_PCF8591(0x91);        	//向PCF8591的IIC总线发送一位数据：地址控制字（可能需要根据实际情况更改），并选择读操作
+	IIC_Read_PCF8591(0);
+	dat = IIC_Read_PCF8591(1);      	//从PCF8591的IIC总线读取一位数据，并发送NAK
+	IIC_Stop_PCF8591();             	//向PCF8591的IIC总线发送通信结束信号
 	return dat;
 }
 /*///////////////////////////////////////////////////////////////////////////////////
@@ -63,6 +98,7 @@ unsigned char PCF8591_Read(unsigned char chanl)
 *////////////////////////////////////////////////////////////////////////////////////
 void PCF8591_DA(unsigned char dat)
 {
+	PCF8591_DA_Flag = 1;
 	IIC_Start_PCF8591();        //向PCF8591的IIC总线发送通信起始信号
 	IIC_Write_PCF8591(0x90);    //向PCF8591的IIC总线发送一位数据：地址控制字（可能需要根据实际情况更改），并选择写操作
 	IIC_Write_PCF8591(0x40);    //向PCF8591的IIC总线发送一位数据：启动DA转换命令

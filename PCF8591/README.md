@@ -14,7 +14,7 @@
 函数名：PCF8591_Read <br/>
 函数功能：读取AD转换得到的值（普通转换，非差分） <br/>
 参数列表： <br/>
-&emsp;chanl <br/>
+&emsp;channel <br/>
 &emsp;&emsp;参数类型：unsigned char型数据 <br/>
 &emsp;&emsp;参数描述：通道号 <br/>
 返回值：一个unxigned char型数据，AD值 <br/>
