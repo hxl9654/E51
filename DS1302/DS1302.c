@@ -12,42 +12,22 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-	°æÈ¨ËùÓĞ£¨C£© <2014>   <ºÎÏàÁú>
-	ÕâÒ»³ÌĞòÊÇ×ÔÓÉÈí¼ş£¬Äã¿ÉÒÔ×ñÕÕ×ÔÓÉÈí¼ş»ù½ğ»á³ö°æµÄGNUÍ¨ÓÃ¹«¹²Ğí¿ÉÖ¤
-	Ìõ¿îÀ´ĞŞ¸ÄºÍÖØĞÂ·¢²¼ÕâÒ»³ÌĞò¡£Äã¿ÉÒÔÊ¹ÓÃĞí¿ÉÖ¤µÄµÚÈı°æ£¬»òÕß£¨¸ù¾İÄã
-	µÄÑ¡Ôñ£©ÓÃÈÎºÎ¸üĞÂµÄ°æ±¾¡£
-
-	·¢²¼ÕâÒ»³ÌĞòµÄÄ¿µÄÊÇÏ£ÍûËüÓĞÓÃ£¬µ«Ã»ÓĞÈÎºÎµ£±£¡£ÉõÖÁÃ»ÓĞÊÊºÏÌØ¶¨Ä¿µÄ
-	µÄÒşº¬µÄµ£±£¡£¸üÏêÏ¸µÄÇé¿öÇë²ÎÔÄGNUÍ¨ÓÃ¹«¹²Ğí¿ÉÖ¤¡£
-
-	ÄãÓ¦¸ÃÒÑ¾­ºÍ³ÌĞòÒ»ÆğÊÕµ½Ò»·İGNUÍ¨ÓÃ¹«¹²Ğí¿ÉÖ¤µÄ¸±±¾¡£Èç¹û»¹Ã»ÓĞ£¬Çë·Ã
-	ÎÊ<http://www.gnu.org/licenses/>¡£
 	×÷Õß£ººÎÏàÁú
 	ÓÊÏä£ºqwgg9654@gmail.com
 		  568629794@qq.com
 	2014Äê12ÔÂ9ÈÕ
 	¹¦ÄÜÃèÊö£ºDS1302Ê±ÖÓĞ¾Æ¬µÄÊ±¼äÉèÖÃ¼°¶ÁÈ¡
 *////////////////////////////////////////////////////////////////////////////////////////
-/*//////////////////Íâ²¿ÉùÃ÷//////////////////////////////////
-extern void DS1302_Init(uint8 *dat);  //DS1302³õÊ¼»¯º¯Êı£¬ÔÚÖ÷º¯Êı¿ªÍ·µ÷ÓÃ£¬datÊÇÉèÖÃµÄÊ±¼ä
-extern uint8 DS1302_SingleRead(uint8 addr); //DS1302µ¥×Ö½Ú¶ÁÈ¡£¬datÎª¶ÁÈ¡Êı¾İ´æ´¢Î»ÖÃ£¬addrÎª¼Ä´æÆ÷µØÖ·£¬Ïê¼ûÊı¾İÊÖ²á
-extern void DS1302_SingleWrite(uint8 addr,uint8 dat);   //DS1302µ¥×Ö½ÚĞ´Èë£¬datÎªĞ´ÈëÊı¾İ£¬addrÎª¼Ä´æÆ÷µØÖ·£¬Ïê¼ûÊı¾İÊÖ²á
-extern void DS1302_BrustWrite(uint8 *dat);  //DS1302BrustÄ£Ê½Ğ´Èë£¬datÎªuint8ĞÍµÄÓµÓĞ8¸öÔªËØµÄÊı×é
-extern void DS1302_BrustRead(uint8 *dat);   //DS1302BrustÄ£Ê½¶ÁÈ¡£¬datÎªuint8ĞÍµÄÓµÓĞ8¸öÔªËØµÄÊı×é
-////////////////////////////////////////////////////////////*/
 #include<reg51.h>
-typedef unsigned char uint8;
-typedef unsigned int uint16;
 
 struct StructTime{
-	uint8 sec;
-	uint8 min;
-	uint8 hour;
-	uint8 day;
-	uint8 month;
-	uint8 week;
-	uint8 year;
+	unsigned char sec;
+	unsigned char min;
+	unsigned char hour;
+	unsigned char day;
+	unsigned char month;
+	unsigned char week;
+	unsigned char year;
 };
 
 sbit DS1302_CE=P1^7;//Çë¸ù¾İÊµ¼ÊÇé¿öĞŞ¸Ä
@@ -57,7 +37,6 @@ sbit DS1302_CK=P3^5;
 void Delay1ms()		//@11.0592MHz
 {
 	unsigned char i, j;
-
 	i = 11;
 	j = 190;
 	do
@@ -66,9 +45,10 @@ void Delay1ms()		//@11.0592MHz
 	} while (--i);
 }
 
-void DS1302_ByteWrite(uint8 dat)
+
+void DS1302_ByteWrite(unsigned char dat)
 {
-	uint8 mask;
+	unsigned char mask;
 	for(mask=0x01;mask!=0;mask<<=1)
 		{
 			if(mask&dat)DS1302_IO=1;
@@ -79,9 +59,9 @@ void DS1302_ByteWrite(uint8 dat)
 	DS1302_IO=1;
 }
 
-uint8 DS1302_ByteRead()
+unsigned char DS1302_ByteRead()
 {
-	uint8 mask,dat=0;
+	unsigned char mask,dat=0;
 	DS1302_IO=1;
 	for(mask=0x01;mask!=0;mask<<=1)
 		{
@@ -91,9 +71,9 @@ uint8 DS1302_ByteRead()
 		}
 	return dat;
 }
-uint8 DS1302_SingleRead(uint8 addr)		//DS1302µ¥×Ö½Ú¶ÁÈ¡£¬datÎª¶ÁÈ¡Êı¾İ´æ´¢Î»ÖÃ£¬addrÎª¼Ä´æÆ÷µØÖ·£¬Ïê¼ûÊı¾İÊÖ²á
+unsigned char DS1302_SingleRead(unsigned char addr)		//DS1302µ¥×Ö½Ú¶ÁÈ¡£¬datÎª¶ÁÈ¡Êı¾İ´æ´¢Î»ÖÃ£¬addrÎª¼Ä´æÆ÷µØÖ·£¬Ïê¼ûÊı¾İÊÖ²á
 {
-	uint8 dat;
+	unsigned char dat;
 	EA=0;
 	DS1302_CE=1;
 	DS1302_ByteWrite(0x81|(addr<<1));
@@ -102,7 +82,7 @@ uint8 DS1302_SingleRead(uint8 addr)		//DS1302µ¥×Ö½Ú¶ÁÈ¡£¬datÎª¶ÁÈ¡Êı¾İ´æ´¢Î»ÖÃ£¬
 	EA=1;
 	return dat;
 }
-void DS1302_SingleWrite(uint8 addr,uint8 dat)	//DS1302µ¥×Ö½ÚĞ´Èë£¬datÎªĞ´ÈëÊı¾İ£¬addrÎª¼Ä´æÆ÷µØÖ·£¬Ïê¼ûÊı¾İÊÖ²á
+void DS1302_SingleWrite(unsigned char addr,unsigned char dat)	//DS1302µ¥×Ö½ÚĞ´Èë£¬datÎªĞ´ÈëÊı¾İ£¬addrÎª¼Ä´æÆ÷µØÖ·£¬Ïê¼ûÊı¾İÊÖ²á
 {
 	EA=0;
 	DS1302_CE=1;
@@ -111,9 +91,9 @@ void DS1302_SingleWrite(uint8 addr,uint8 dat)	//DS1302µ¥×Ö½ÚĞ´Èë£¬datÎªĞ´ÈëÊı¾İ£
 	DS1302_CE=0;
 	EA=1;
 }
-void DS1302_BrustWrite(uint8 *dat)	//DS1302BrustÄ£Ê½Ğ´Èë£¬datÎªuint8ĞÍµÄÓµÓĞ8¸öÔªËØµÄÊı×é
+void DS1302_BrustWrite(unsigned char *dat)	//DS1302BrustÄ£Ê½Ğ´Èë£¬datÎªuint8ĞÍµÄÓµÓĞ8¸öÔªËØµÄÊı×é
 {
-	uint8 i;
+	unsigned char i;
 	EA=0;
 	DS1302_CE=1;
 	DS1302_ByteWrite(0xBE);
@@ -125,9 +105,9 @@ void DS1302_BrustWrite(uint8 *dat)	//DS1302BrustÄ£Ê½Ğ´Èë£¬datÎªuint8ĞÍµÄÓµÓĞ8¸öÔ
 	DS1302_CE=0;
 	EA=1;
 }
-void DS1302_BrustRead(uint8 *dat)	//DS1302BrustÄ£Ê½¶ÁÈ¡£¬datÎªuint8ĞÍµÄÓµÓĞ8¸öÔªËØµÄÊı×é
+void DS1302_BrustRead(unsigned char *dat)	//DS1302BrustÄ£Ê½¶ÁÈ¡£¬datÎªuint8ĞÍµÄÓµÓĞ8¸öÔªËØµÄÊı×é
 {
-	uint8 i;
+	unsigned char i;
 	EA=0;
 	DS1302_CE=1;
 	DS1302_ByteWrite(0xBF);
@@ -143,7 +123,7 @@ void DS1302_BrustRead(uint8 *dat)	//DS1302BrustÄ£Ê½¶ÁÈ¡£¬datÎªuint8ĞÍµÄÓµÓĞ8¸öÔª
 	DS1302_CE=0;
 	EA=1;
 }
-void DS1302_Init(uint8 *dat)	//DS1302³õÊ¼»¯º¯Êı£¬ÔÚÖ÷º¯Êı¿ªÍ·µ÷ÓÃ£¬datÊÇÉèÖÃµÄÊ±¼ä
+void DS1302_Init(unsigned char *dat)	//DS1302³õÊ¼»¯º¯Êı£¬ÔÚÖ÷º¯Êı¿ªÍ·µ÷ÓÃ£¬datÊÇÉèÖÃµÄÊ±¼ä
 {
 	DS1302_CE=0;
 	DS1302_CK=0;
@@ -151,72 +131,3 @@ void DS1302_Init(uint8 *dat)	//DS1302³õÊ¼»¯º¯Êı£¬ÔÚÖ÷º¯Êı¿ªÍ·µ÷ÓÃ£¬datÊÇÉèÖÃµÄÊ±
 	DS1302_SingleWrite(7, 0x00);
     DS1302_BrustWrite(dat);
 }
-/*//////////////////Ê¾Àı³ÌĞò///////////////////////////////
-
-void main()
-{
-	uint8 dat[8];
-	uint8 dat[8]={0x00,0x15,0x91,0x09,0x12,0x02,0x14,0x00};	  //³õÊ¼Ê±¼ä
-	uint8 temp[16];
-	uint8 backup=0xAA;
-	LCD1602_Init();
-	Timer0_Conf(1);
-	DS1302_Init(dat);
-	while(1)
-	{
-		if(Flag_200ms)
-		{
-			Flag_200ms=0;
-			DS1302_BrustRead(dat);
-			if(dat[0]==backup)continue;
-			backup=dat[0];
-			temp[0]='2';
-			temp[1]='0';
-			temp[2]=(dat[6]>>4)+'0';
-			temp[3]=(dat[6]&0x0F)+'0';
-			temp[4]='-';
-			temp[5]=(dat[4]>>4)+'0';
-			temp[6]=(dat[4]&0x0F)+'0';
-			temp[7]='-';
-			temp[8]=(dat[3]>>4)+'0';
-			temp[9]=(dat[3]&0x0F)+'0';
-			temp[10]=' ';
-			temp[11]='w';
-			temp[12]='e';
-			temp[13]='e';
-			temp[14]='k';
-			temp[15]=dat[5]+'0';
-			LCD1602_Show(0,0,temp,16);
-			temp[0]=' ';
-			temp[1]=' ';
-			temp[2]=' ';
-			temp[3]=' ';
-			temp[4]=((dat[2]>>4)&0x07)+'0';
-			temp[5]=(dat[2]&0x0F)+'0';
-			temp[6]=':';
-			temp[7]=(dat[1]>>4)+'0';
-			temp[8]=(dat[1]&0x0F)+'0';
-			temp[9]=':';
-			temp[10]=((dat[0]>>4)&0x07)+'0';
-			temp[11]=(dat[0]&0x0F)+'0';
-			temp[12]=' ';
-			temp[13]=' ';
-			temp[14]=' ';
-			temp[15]=' ';
-			LCD1602_Show(0,1,temp,16);
-		}
-	}
-}
-void it0() interrupt 1
-{
-	static uint8 ms200=0;
-	TH0=T0H;
-	TL0=T0L;
-	ms200++;
-	if(ms200>=200)
-		{
-			ms200=0;
-			Flag_200ms=1;
-		}
-}
-/////////////////////////////////////////////////////////*/
