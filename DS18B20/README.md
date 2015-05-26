@@ -7,8 +7,6 @@
 备注：尽量使用封装好的函数进行操作，而不要使用直接对DS18B20读写的函数。 <br/>
 &emsp;使用该模块，请在config.h中定义DS18B20_IO_SET常量为DS18B20的数据接口。 <br/>
 &emsp;&emsp;如 #define DS18B20_IO_SET P0^0 <br/>
-&emsp;使用该模块，请在config.h中定义STC_YX常量为STC单片机指令集名称。 <br/>
-&emsp;&emsp;如 #define STC_YX "STC_Y5" <br/>
 &emsp;使用该模块，请在config.h中定义XTAL常量为晶振频率 <br/>
 &emsp;&emsp;如 #define XTAL 11.059200 <br/>
 ## double DS18B20_GetTemp(unsigned char *addr);

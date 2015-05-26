@@ -21,8 +21,6 @@
 	备注：尽量使用封装好的函数进行操作，而不要使用直接对DS18B20读写的函数。
           使用该模块，请在config.h中定义DS18B20_IO_SET常量为DS18B20的数据接口。
           如 #define DS18B20_IO_SET P0^0
-          使用该模块，请在config.h中定义STC_YX常量为STC单片机指令集名称。
-          如 #define STC_YX "STC_Y5"
           使用该模块，请在config.h中定义XTAL常量为晶振频率
           如 #define XTAL 11.059200
 *////////////////////////////////////////////////////////////////////////////////////////
@@ -31,15 +29,8 @@
 
 #define _6nop(); {_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();}
 //定义适用于STC_Y3,STC_Y5的nop延时
-#define STC_Y1 1
-#define STC_Y3 3
-#define STC_Y5 5
 
 sbit DS18B20_IO = DS18B20_IO_SET;
-
-#ifndef STC_YX
-#define STC_YX STC_Y5
-#endif //如果没有定义STC单片机的指令集，则默认为STC_Y5指令集
 
 #ifndef XTAL
 #define XTAL 11.059200
@@ -60,42 +51,20 @@ sbit DS18B20_IO = DS18B20_IO_SET;
 *版本改动：重写函数，使之能在各种指令集、各晶振频率下工作
 *作者：何相龙
 *日期：2015年5月11日
+*版本：1.2
+*版本改动：取消兼容STC_Y1指令集
+*作者：何相龙
+*日期：2015年5月26日
 *////////////////////////////////////////////////////////////////////////////////////
 void DelayX10us(unsigned char t)
 {
 	unsigned int i;
-	#if STC_YX == STC_Y1
-		//如果当前指令集为STC_Y1，由于该款单片机性能较差，所以用宏来针对不同的晶振频率选择延时函数
-        #if XTAL < 8
-        #elif XTAL >= 8 && XTAL < 9
-            _nop_();
-        #elif XTAL >= 9 && XTAL < 12
-            i = t;
-            while(--i);
-        #elif XTAL >= 12 && XTAL < 14
-            i = 2 * t;
-            while(--i);
-        #elif XTAL >= 14 && XTAL < 16
-            i = 3 * t;
-            while(--i);
-        #elif XTAL >= 16 && XTAL < 18
-            i = 4 * t;
-            while(--i);
-        #elif XTAL >= 18 && XTAL < 20
-            i = 5 * t;
-            while(--i);
-        #elif XTAL >= 20
-            i = XTAL / 10 * t + 0.5;
-            while(--i);
-        #endif
-    #else                           //如果当前指令集为STC_Y3或STC_Y5
-		i = t * 2;
-        while (--i)
-		{
-			_6nop();_6nop();_6nop();_6nop();_6nop();
-			_6nop();_nop_();_nop_();_nop_();
-		}
-	#endif
+    i = t * 2;
+    while (--i)
+    {
+        _6nop();_6nop();_6nop();_6nop();_6nop();
+        _6nop();_nop_();_nop_();_nop_();
+    }
 }
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：DS18B20_Init
@@ -141,11 +110,7 @@ void DS18B20_Write(unsigned char dat)
 		if(dat&mask)                    //获取当前位是否为1
 		{
 			DS18B20_IO=0;               //位开始信号
-			#if STC_YX == STC_Y1
-			_nop_();                    //稍微延时，防止错误。对不同的单片机指令集做了不同的处理
-			#else
-            _6nop();_6nop();
-			#endif
+            _6nop();_6nop();            //稍微延时，防止错误。
 			DS18B20_IO=1;               //拉高总线，发送数据
 			DelayX10us(8);              //延时80us
 		}
@@ -155,11 +120,7 @@ void DS18B20_Write(unsigned char dat)
 			DelayX10us(8);              //延时80us
 			DS18B20_IO=1;               //释放总线
 		}
-			#if STC_YX == STC_Y1
-			_nop_();_nop_();            //稍微延时，防止错误。对不同的单片机指令集做了不同的处理
-			#else
-            _6nop();_6nop();
-			#endif
+            _6nop();_6nop();            //稍微延时，防止错误。
 	}
 	EA=1;                               //恢复中断使能
 }
@@ -179,11 +140,7 @@ unsigned char DS18B20_Read()
 	for(mask=0x01;mask!=0;mask<<=1)     //按位读取数据
 	{
 		DS18B20_IO=0;                   //拉低总线，发送起始信号
-        #if STC_YX == STC_Y1
-        _nop_();_nop_();                //稍微延时，防止错误。对不同的单片机指令集做了不同的处理
-        #else
-        _6nop();_6nop();
-        #endif
+        _6nop();_6nop();                //稍微延时，防止错误。
 
 		DS18B20_IO=1;                   //释放总线
 		DelayX10us(1);                  //延时10us
