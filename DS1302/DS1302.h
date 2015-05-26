@@ -24,10 +24,60 @@
 
 #include<intrins.h>
 #include<config.h>
-void DS1302_Init(unsigned char *dat);  //DS1302初始化函数，在主函数开头调用，dat是设置的时间
-unsigned char DS1302_SingleRead(unsigned char addr); //DS1302单字节读取，dat为读取数据存储位置，addr为寄存器地址，详见数据手册
-void DS1302_SingleWrite(unsigned char addr,unsigned char dat);   //DS1302单字节写入，dat为写入数据，addr为寄存器地址，详见数据手册
-void DS1302_BrustWrite(unsigned char *dat);  //DS1302Brust模式写入，dat为uint8型的拥有8个元素的数组
-void DS1302_BrustRead(unsigned char *dat);   //DS1302Brust模式读取，dat为uint8型的拥有8个元素的数组
+struct DS1302_Time{         //定义时间结构体
+    unsigned char year;     //时间年（请使用十进制表示）
+    unsigned char month;    //时间月（请使用十进制表示）
+    unsigned char day;      //时间日（请使用十进制表示）
+    unsigned char week;     //星期  （请使用十进制表示）
+	unsigned char hour;     //时间时（请使用十进制表示）
+	unsigned char min;      //时间分（请使用十进制表示）
+	unsigned char sec;      //时间秒（请使用十进制表示）
+};
+
+/*///////////////////////////////////////////////////////////////////////////////////
+*函数名：DS1302_SingleRead
+*函数功能：向DS1302发送读取数据命令，并读一个unsigned char型的数据
+*参数列表：
+*   ddr
+*       参数类型：unsigned char型整数
+*       参数描述：寄存器地址，详见数据手册
+*返回值：一个unsigned char型变量：读取到的数据
+*////////////////////////////////////////////////////////////////////////////////////
+unsigned char DS1302_SingleRead(unsigned char addr);
+/*///////////////////////////////////////////////////////////////////////////////////
+*函数名：DS1302_SingleWrite
+*函数功能：向DS1302发送写数据命令，并写一个unsigned char型的数据
+*参数列表：
+*   dat
+*       参数类型：unsigned char型整数
+*       参数描述：要写入的数据
+*   addr
+*       参数类型：unsigned char型整数
+*       参数描述：寄存器地址，详见数据手册
+*////////////////////////////////////////////////////////////////////////////////////
+void DS1302_SingleWrite(unsigned char addr, unsigned char dat);
+/*///////////////////////////////////////////////////////////////////////////////////
+*函数名：DS1302_Write
+*函数功能：DS1302Brust模式写入
+*参数列表：
+*   time
+*       参数类型：struct DS1302_Time（参见DS1302.h）
+*       参数描述：要写入的时间
+*////////////////////////////////////////////////////////////////////////////////////
+void DS1302_Write(struct DS1302_Time time);
+/*///////////////////////////////////////////////////////////////////////////////////
+*函数名：DS1302_Read
+*函数功能：DS1302Brust模式读取
+*参数列表：
+*   time
+*       参数类型：struct DS1302_Time 型指针（参见DS1302.h）
+*       参数描述：读取到的时间存放的位置。
+*////////////////////////////////////////////////////////////////////////////////////
+void DS1302_Read(struct DS1302_Time *time);
+/*///////////////////////////////////////////////////////////////////////////////////
+*函数名：DS1302_Init
+*函数功能：DS1302初始化
+*////////////////////////////////////////////////////////////////////////////////////
+void DS1302_Init();
 
 #endif // _HEAD_DS1302_
