@@ -23,6 +23,8 @@
                 如 #define DS1302_IO_SET P0^1
             使用该模块，请在config.h中定义DS1302_CK_SET常量为DS1302数据总线时钟信号线。
                 如 #define DS1302_CK_SET P0^2
+            使用该模块，请在config.h中定义XTAL常量为晶振频率
+                如 #define XTAL 11.059200
 *////////////////////////////////////////////////////////////////////////////////////////
 #include<reg51.h>
 #include<DS1302.h>
@@ -40,12 +42,12 @@ sbit DS1302_CK = DS1302_CK_SET;
 *返回值：无
 *版本：1.0
 *作者：何相龙
-*日期：2014年12月9日
+*日期：2014年5月26日
 *////////////////////////////////////////////////////////////////////////////////////
-void Delay1ms()		//@11.0592MHz
+void Delay1ms()
 {
 	unsigned char i, j;
-	i = 11;
+	i = (int) XTAL;
 	j = 190;
 	do
 	{
@@ -70,12 +72,12 @@ void DS1302_ByteWrite(unsigned char dat)
 	unsigned char mask;
 	for(mask = 0x01; mask != 0; mask <<= 1)
 		{
-			if(mask & dat)DS1302_IO = 1;
+			if(mask & dat)DS1302_IO = 1;        //将数据按位写到数据总线
 			else DS1302_IO = 0;
-			DS1302_CK = 1;
+			DS1302_CK = 1;                      //产生时钟信号
 			DS1302_CK = 0;
 		}
-	DS1302_IO = 1;
+	DS1302_IO = 1;                              //释放数据总线
 }
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：DS1302_ByteRead
@@ -90,12 +92,12 @@ void DS1302_ByteWrite(unsigned char dat)
 unsigned char DS1302_ByteRead()
 {
 	unsigned char mask, dat = 0;
-	DS1302_IO = 1;
+	DS1302_IO = 1;                              //释放数据总线
 	for(mask = 0x01; mask != 0; mask <<= 1)
 		{
-			if(DS1302_IO)
+			if(DS1302_IO)                       //按位读取数据
                 dat |= mask;
-			DS1302_CK = 1;
+			DS1302_CK = 1;                      //产生时钟信号
 			DS1302_CK = 0;
 		}
 	return dat;
@@ -115,13 +117,13 @@ unsigned char DS1302_ByteRead()
 unsigned char DS1302_SingleRead(unsigned char addr)
 {
 	unsigned char dat;
-	EA = 0;
-	DS1302_CE = 1;
-	DS1302_ByteWrite(0x81 | (addr << 1));
-	dat = DS1302_ByteRead();
-	DS1302_CE = 0;
-	EA = 1;
-	return dat;
+	EA = 0;                                 //关闭中断
+	DS1302_CE = 1;                          //使能DS1302
+	DS1302_ByteWrite(0x81 | (addr << 1));   //发送读取命令及地址
+	dat = DS1302_ByteRead();                //从DS1302读取数据
+	DS1302_CE = 0;                          //禁能DS1302
+	EA = 1;                                 //使能中断
+	return dat;                             //返回读取到的数据
 }
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：DS1302_SingleWrite
@@ -140,12 +142,12 @@ unsigned char DS1302_SingleRead(unsigned char addr)
 *////////////////////////////////////////////////////////////////////////////////////
 void DS1302_SingleWrite(unsigned char addr, unsigned char dat)
 {
-	EA = 0;
-	DS1302_CE = 1;
-	DS1302_ByteWrite(0x80 | (addr << 1));
-	DS1302_ByteWrite(dat);
-	DS1302_CE = 0;
-	EA = 1;
+	EA = 0;                                 //关闭中断
+	DS1302_CE = 1;                          //使能DS1302
+	DS1302_ByteWrite(0x80 | (addr << 1));   //发送写入命令及地址
+	DS1302_ByteWrite(dat);                  //发送要写入的数据
+	DS1302_CE = 0;                          //禁能DS1302
+	EA = 1;                                 //使能中断
 }
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：DS1302_Write
@@ -162,6 +164,7 @@ void DS1302_SingleWrite(unsigned char addr, unsigned char dat)
 void DS1302_Write(struct DS1302_Time time)
 {
 	unsigned char i, dat[8] = {0x00};
+
 	dat[0] = time.sec % 10 + time.sec / 10 * 16;
 	dat[1] = time.min % 10 + time.min / 10 * 16;
 	dat[2] = (time.hour % 10 + time.hour / 10 * 16) | 0x80;
@@ -169,14 +172,16 @@ void DS1302_Write(struct DS1302_Time time)
 	dat[4] = time.month % 10 + time.month / 10 * 16;
 	dat[5] = time.week % 10 + time.week / 10 * 16;
 	dat[6] = time.year % 10 + time.year / 10 * 16;
-	EA = 0;
-	DS1302_CE = 1;
-	DS1302_SingleWrite(7, 0x00);
-	DS1302_ByteWrite(0xBE);
-	for(i = 0; i < 8; i ++)
+	//将指定的数据处理为DS1302能识别的格式
+
+	EA = 0;                         //关闭中断，防止写入被打断
+	DS1302_CE = 1;                  //使能DS1032
+	DS1302_SingleWrite(7, 0x00);    //清除DS1302写保护
+	DS1302_ByteWrite(0xBE);         //向DS1302发送Burst Write指令
+	for(i = 0; i < 8; i ++)         //按位写入数据
 		DS1302_ByteWrite(dat[i]);
-	DS1302_CE = 0;
-	EA = 1;
+	DS1302_CE = 0;                  //禁能DS1302
+	EA = 1;                         //使能中断
 }
 /*///////////////////////////////////////////////////////////////////////////////////
 *函数名：DS1302_Read
@@ -193,19 +198,21 @@ void DS1302_Write(struct DS1302_Time time)
 void DS1302_Read(struct DS1302_Time *time)
 {
 	unsigned char i, dat[8] = {0};
-	EA = 0;
-	DS1302_CE = 1;
-	DS1302_ByteWrite(0xBF);
+	EA = 0;                                 //关闭中断，防止读取被打断
+	DS1302_CE = 1;                          //使能DS1302
+	DS1302_ByteWrite(0xBF);                 //向DS1302发送Burst Read指令
 	for(i = 0; i < 8; i ++)
 		{
-			dat[i] = DS1302_ByteRead();
+			dat[i] = DS1302_ByteRead();     //读取DS1302返回的数据
 			EA = 1;
-			Delay1ms();
+			Delay1ms();                     //延时1ms，暂时恢复中断
 			EA = 0;
 		}
-	DS1302_IO = 0;
+	DS1302_IO = 0;                          //调整DS1302数据总线
 	DS1302_CE = 0;
-	EA = 1;
+	EA = 1;                                 //使能中断
+
+	//对读取到的信息进行处理，放入指定的变量中。
 	*time.sec = dat[0] %16 + dat[0] / 16 * 10;
 	*time.min = dat[1] %16 + dat[1] / 16 * 10;
 	*time.hour = (dat[2] %16 + dat[2] / 16 * 10) & 0x7F;
@@ -226,8 +233,8 @@ void DS1302_Read(struct DS1302_Time *time)
 *////////////////////////////////////////////////////////////////////////////////////
 void DS1302_Init()
 {
-	DS1302_CE = 0;
+	DS1302_CE = 0;                  //调整DS1302数据总线电平
 	DS1302_CK = 0;
 	DS1302_IO = 1;
-	DS1302_SingleWrite(7, 0x00);
+	DS1302_SingleWrite(7, 0x00);    //清除写保护
 }
